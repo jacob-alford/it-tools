@@ -78,17 +78,18 @@ const allValid = computed(
 
 const payment = computed(() =>
   amortizationCalculator.value.getPayment({
-    principle: parsedLoanAmount.value,
+    principal: parsedLoanAmount.value,
     periodInterestRate: parsedInterestRate.value / 1200,
     numberOfPayments: parsedLoanMonths.value,
   }),
 );
 
 const amortizationSchedule = computed(() => {
-  // Re-initialize generator when currency changes
+  // Access selectedCurrency.value to ensure the computed property re-evaluates when currency changes,
+  // forcing the generator to be recreated and the table to re-render with new formatting
   selectedCurrency.value;
   return amortizationCalculator.value.getAmortizationSchedule({
-    principle: parsedLoanAmount.value,
+    principal: parsedLoanAmount.value,
     periodInterestRate: parsedInterestRate.value / 1200,
     numberOfPayments: parsedLoanMonths.value,
   });
@@ -168,15 +169,15 @@ function formatCurrency(num: number): string {
       <tbody>
         <tr v-for="period in amortizationSchedule" :key="period.type + period.paymentIndex">
           <template v-if="period.type === 'month'">
-            <td v-if="period.type === 'month'">{{ period.paymentIndex }}</td>
+            <td>{{ period.paymentIndex }}</td>
             <td>{{ formatCurrency(period.interestPayment) }}</td>
-            <td>{{ formatCurrency(period.principlePayment) }}</td>
+            <td>{{ formatCurrency(period.principalPayment) }}</td>
             <td>{{ formatCurrency(period.remainingBalance) }}</td>
           </template>
           <template v-else>
             <th>{{ t('tools.amortization-calculator.texts.label-end-of-year', { year: period.paymentIndex }) }}</th>
             <th>{{ formatCurrency(period.interestPayment) }}</th>
-            <th>{{ formatCurrency(period.principlePayment) }}</th>
+            <th>{{ formatCurrency(period.principalPayment) }}</th>
             <th>{{ formatCurrency(period.remainingBalance) }}</th>
           </template>
         </tr>
