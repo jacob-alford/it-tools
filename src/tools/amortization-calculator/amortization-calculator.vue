@@ -85,8 +85,7 @@ const payment = computed(() =>
 );
 
 const amortizationSchedule = computed(() => {
-  // Access selectedCurrency.value to ensure the computed property re-evaluates when currency changes,
-  // forcing the generator to be recreated and the table to re-render with new formatting
+  // Force reactivity on currency changes to regenerate formatting
   selectedCurrency.value;
   return amortizationCalculator.value.getAmortizationSchedule({
     principal: parsedLoanAmount.value,
